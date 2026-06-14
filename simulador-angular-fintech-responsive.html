@@ -1,0 +1,593 @@
+<div class="ng-fintech-app">
+
+<style>
+.ng-fintech-app *{box-sizing:border-box;margin:0;padding:0}
+.ng-fintech-app{background:#05080F;color:#E8F0FF;font-family:'Courier New',monospace;min-height:600px;border-radius:8px;overflow:hidden;width:100%;max-width:100%}
+.ng-fintech-app .topbar{background:#080D18;border-bottom:1px solid #1A3A5C;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.ng-fintech-app .brand{display:flex;align-items:center;gap:8px;min-width:0}
+.ng-fintech-app .brand-logo{width:28px;height:28px;flex-shrink:0}
+.ng-fintech-app .brand-name{font-size:11px;font-weight:700;color:#00D4FF;letter-spacing:1.5px;white-space:nowrap}
+.ng-fintech-app .brand-sub{font-size:8.5px;color:#6B7FA3;letter-spacing:.5px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ng-fintech-app .topbar-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.ng-fintech-app .ws-pill{display:flex;align-items:center;gap:4px;background:#0C1220;border:1px solid rgba(0,255,136,.3);border-radius:4px;padding:2px 6px}
+.ng-fintech-app .ws-dot{width:6px;height:6px;background:#00FF88;border-radius:50%;animation:ngblink 2s infinite;flex-shrink:0}
+@keyframes ngblink{0%,100%{opacity:1}50%{opacity:.3}}
+.ng-fintech-app .ws-txt{font-size:8px;color:#00FF88;letter-spacing:1px;white-space:nowrap}
+.ng-fintech-app .jwt-pill{background:#0C1220;border:1px solid #1A3A5C;border-radius:4px;padding:2px 6px;font-size:8px;color:#6B7FA3;white-space:nowrap}
+
+.ng-fintech-app .nav{display:flex;background:#080D18;border-bottom:1px solid #0A1830;padding:0 6px;gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+.ng-fintech-app .nav::-webkit-scrollbar{height:3px}
+.ng-fintech-app .nav::-webkit-scrollbar-thumb{background:#1A3A5C}
+.ng-fintech-app .tab{padding:9px 10px;font-size:9.5px;font-weight:700;letter-spacing:1px;color:#6B7FA3;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s;flex-shrink:0;display:flex;align-items:center}
+.ng-fintech-app .tab.on{color:#00D4FF;border-bottom-color:#00D4FF}
+.ng-fintech-app .tab:hover:not(.on){color:#E8F0FF}
+
+.ng-fintech-app .pane{display:none;padding:10px}
+.ng-fintech-app .pane.on{display:block}
+
+.ng-fintech-app .sec-label{font-size:9px;color:#6B7FA3;letter-spacing:1.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.ng-fintech-app .sec-label::after{content:'';flex:1;height:1px;background:#1A3A5C;min-width:10px}
+
+.ng-fintech-app .op-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:10px}
+.ng-fintech-app .op{background:#0C1220;border:1px solid #1A3A5C;border-radius:8px;padding:10px;cursor:pointer;transition:all .2s;min-width:0}
+.ng-fintech-app .op.sel-b{border-color:#00D4FF;background:rgba(0,212,255,.07)}
+.ng-fintech-app .op.sel-p{border-color:#B060FF;background:rgba(176,96,255,.07)}
+.ng-fintech-app .op.sel-o{border-color:#FF6B00;background:rgba(255,107,0,.07)}
+.ng-fintech-app .op.sel-r{border-color:#FF2D55;background:rgba(255,45,85,.07)}
+.ng-fintech-app .op-icon{width:26px;height:26px;margin-bottom:6px}
+.ng-fintech-app .op-name{font-size:11px;font-weight:700;margin-bottom:3px}
+.ng-fintech-app .op-case{font-size:9px;color:#6B7FA3;line-height:1.4}
+.ng-fintech-app .badge{display:inline-block;margin-top:5px;padding:2px 6px;border-radius:3px;font-size:8px;font-weight:700;letter-spacing:1px}
+.ng-fintech-app .badge-b{background:rgba(0,212,255,.15);color:#00D4FF;border:1px solid rgba(0,212,255,.3)}
+.ng-fintech-app .badge-p{background:rgba(176,96,255,.15);color:#B060FF;border:1px solid rgba(176,96,255,.3)}
+.ng-fintech-app .badge-o{background:rgba(255,107,0,.15);color:#FF6B00;border:1px solid rgba(255,107,0,.3)}
+.ng-fintech-app .badge-r{background:rgba(255,45,85,.15);color:#FF2D55;border:1px solid rgba(255,45,85,.3)}
+
+.ng-fintech-app .marble-area{background:#080D18;border:1px solid #1A3A5C;border-radius:8px;padding:10px;margin-bottom:8px;overflow-x:auto}
+.ng-fintech-app .m-row{display:flex;align-items:center;gap:6px;margin:7px 0;min-width:340px}
+.ng-fintech-app .m-lbl{width:64px;font-size:9px;color:#6B7FA3;text-align:right;flex-shrink:0}
+.ng-fintech-app .m-line{flex:1;height:2px;background:#1A3A5C;position:relative;min-width:180px}
+.ng-fintech-app .m-node{position:absolute;top:-13px;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .5s}
+.ng-fintech-app .m-node svg{width:13px;height:13px}
+.ng-fintech-app .m-node.nb{background:rgba(0,212,255,.2);border:1.5px solid #00D4FF}
+.ng-fintech-app .m-node.ng{background:rgba(0,255,136,.2);border:1.5px solid #00FF88}
+.ng-fintech-app .m-node.nr{background:rgba(255,45,85,.2);border:1.5px solid #FF2D55}
+.ng-fintech-app .m-node.nm{background:rgba(107,127,163,.15);border:1.5px solid #3A5A8C}
+.ng-fintech-app .m-txt{font-size:8px;font-weight:700;color:#E8F0FF}
+.ng-fintech-app .m-arrow{color:#3A5A8C;font-size:12px;flex-shrink:0}
+
+.ng-fintech-app .code-block{background:#050810;border:1px solid #0A1830;border-radius:6px;padding:10px;font-size:9px;color:#7DD3FC;line-height:1.6;white-space:pre;overflow-x:auto;margin-top:8px;-webkit-overflow-scrolling:touch}
+.ng-fintech-app .btn-run{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.4);color:#00D4FF;padding:7px 14px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;letter-spacing:1px;transition:all .2s}
+.ng-fintech-app .btn-run:hover{background:rgba(0,212,255,.2)}
+.ng-fintech-app .btn-red{background:rgba(255,45,85,.1);border:1px solid rgba(255,45,85,.4);color:#FF2D55;padding:7px 14px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer}
+.ng-fintech-app .btn-green{background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.3);color:#00FF88;padding:7px 14px;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer}
+.ng-fintech-app .btn-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:8px}
+
+.ng-fintech-app .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-bottom:10px}
+.ng-fintech-app .kpi{background:#0C1220;border:1px solid #1A3A5C;border-radius:8px;padding:9px;min-width:0}
+.ng-fintech-app .kpi-l{font-size:8px;color:#6B7FA3;letter-spacing:1px;margin-bottom:3px;display:flex;align-items:center;gap:4px;white-space:nowrap;overflow:hidden}
+.ng-fintech-app .kpi-v{font-size:17px;font-weight:700;font-family:monospace}
+.ng-fintech-app .kpi-d{font-size:9px;margin-top:2px}
+.ng-fintech-app .up{color:#00FF88}.ng-fintech-app .dn{color:#FF2D55}.ng-fintech-app .or{color:#FF6B00}.ng-fintech-app .bl{color:#00D4FF}
+
+.ng-fintech-app .dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px;margin-bottom:8px}
+.ng-fintech-app .panel{background:#080D18;border:1px solid #1A3A5C;border-radius:8px;padding:10px;min-width:0}
+.ng-fintech-app .p-title{font-size:9px;color:#00D4FF;font-weight:700;letter-spacing:1.5px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px}
+.ng-fintech-app .live-badge{background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.3);color:#00FF88;font-size:8px;padding:2px 6px;border-radius:3px;display:flex;align-items:center;gap:4px}
+.ng-fintech-app .t-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;border-bottom:1px solid #0A1830;font-size:10px;gap:4px}
+.ng-fintech-app .t-name{color:#E8F0FF;font-weight:700;flex:1;font-size:10px}
+.ng-fintech-app .t-price{font-family:monospace;font-weight:700;text-align:right;font-size:10px;flex-shrink:0}
+.ng-fintech-app .t-chg{font-size:9px;text-align:right;width:50px;flex-shrink:0}
+.ng-fintech-app .srch{position:relative;margin-bottom:6px}
+.ng-fintech-app .srch input{width:100%;background:#050810;border:1px solid #1A3A5C;border-radius:6px;padding:7px 10px 7px 30px;color:#E8F0FF;font-size:10px;font-family:monospace;outline:none}
+.ng-fintech-app .srch input:focus{border-color:#00D4FF}
+.ng-fintech-app .srch-ico{position:absolute;left:9px;top:50%;transform:translateY(-50%);width:14px;height:14px}
+.ng-fintech-app .srch-st{font-size:9px;color:#6B7FA3;min-height:14px;margin-bottom:5px}
+.ng-fintech-app .acc{display:flex;justify-content:space-between;align-items:center;padding:5px 8px;border-radius:4px;margin-bottom:3px;background:#0C1220;border:1px solid #1A3A5C;font-size:9px;gap:6px}
+.ng-fintech-app .acc-ib{color:#00D4FF;font-family:monospace;font-size:8.5px;word-break:break-all}
+.ng-fintech-app .acc-bal{color:#00FF88;font-weight:700;font-family:monospace;flex-shrink:0}
+.ng-fintech-app .tx-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #050810;font-size:10px;align-items:center;gap:6px}
+.ng-fintech-app .tx-ico{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ng-fintech-app .tx-left{display:flex;align-items:center;min-width:0;gap:7px}
+.ng-fintech-app .tx-desc{color:#E8F0FF;font-size:9.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ng-fintech-app .tx-date{color:#6B7FA3;font-size:8px}
+.ng-fintech-app .tx-amt{flex-shrink:0;font-weight:700;font-family:monospace;font-size:10px}
+
+.ng-fintech-app .flow-row{display:flex;align-items:center;gap:0;margin-bottom:10px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.ng-fintech-app .f-step{flex:1;min-width:78px;background:#0C1220;border:1px solid #1A3A5C;border-radius:6px;padding:7px 4px;text-align:center;font-size:9px;color:#E8F0FF;transition:all .4s}
+.ng-fintech-app .f-step.f-act{border-color:#00D4FF;background:rgba(0,212,255,.08)}
+.ng-fintech-app .f-step.f-err{border-color:#FF2D55;background:rgba(255,45,85,.08)}
+.ng-fintech-app .f-step.f-ok{border-color:#00FF88;background:rgba(0,255,136,.08)}
+.ng-fintech-app .f-lbl{font-size:8px;color:#6B7FA3;margin-top:3px}
+.ng-fintech-app .f-arr{color:#3A5A8C;font-size:13px;padding:0 2px;flex-shrink:0}
+.ng-fintech-app .log{background:#050810;border:1px solid #0A1830;border-radius:8px;padding:10px;font-family:monospace;font-size:9px;height:130px;overflow-y:auto}
+.ng-fintech-app .ll{padding:2px 0;border-bottom:1px solid #080D18;line-height:1.5;word-break:break-word}
+.ng-fintech-app .lt{color:#3A5A8C;margin-right:5px}
+.ng-fintech-app .li{color:#00D4FF}.ng-fintech-app .lw{color:#FF6B00}.ng-fintech-app .ls{color:#00FF88}.ng-fintech-app .le{color:#FF2D55}
+
+.ng-fintech-app .cd-toggle{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.ng-fintech-app .cd-btn{flex:1;min-width:120px;padding:8px 4px;border-radius:6px;font-size:9.5px;font-weight:700;cursor:pointer;letter-spacing:1px;text-align:center;border:1px solid;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.ng-fintech-app .cd-def{border-color:#FF2D55;color:#FF2D55;background:rgba(255,45,85,.06)}
+.ng-fintech-app .cd-def.acd{background:rgba(255,45,85,.18)}
+.ng-fintech-app .cd-onp{border-color:#00FF88;color:#00FF88;background:rgba(0,255,136,.06)}
+.ng-fintech-app .cd-onp.acd{background:rgba(0,255,136,.18)}
+.ng-fintech-app .tree-wrap{display:flex;justify-content:center;margin-bottom:8px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.ng-fintech-app .nd{display:flex;flex-direction:column;align-items:center}
+.ng-fintech-app .nb2{padding:5px 8px;border-radius:6px;font-size:8.5px;font-weight:700;border:1px solid;white-space:nowrap;transition:all .4s;text-align:center}
+.ng-fintech-app .nb2.chk{background:rgba(255,45,85,.2);border-color:#FF2D55;color:#FF2D55}
+.ng-fintech-app .nb2.ski{background:#0C1220;border-color:#1A3A5C;color:#3A5A8C}
+.ng-fintech-app .nb2.trg{background:rgba(0,255,136,.2);border-color:#00FF88;color:#00FF88}
+.ng-fintech-app .nd-con{width:1px;height:12px;background:#1A3A5C}
+.ng-fintech-app .nd-row{display:flex;gap:8px}
+.ng-fintech-app .chk-cnt{text-align:center;padding:8px 0}
+.ng-fintech-app .chk-n{font-size:30px;font-weight:700;font-family:monospace}
+.ng-fintech-app .chk-l{font-size:9px;color:#6B7FA3;letter-spacing:2px}
+
+@media (max-width:640px){
+  .ng-fintech-app .brand-sub{display:none}
+  .ng-fintech-app .jwt-pill{font-size:7.5px}
+  .ng-fintech-app .tab{font-size:9px;padding:8px 8px}
+  .ng-fintech-app .op-icon{width:22px;height:22px}
+  .ng-fintech-app .kpi-v{font-size:14px}
+  .ng-fintech-app .code-block{font-size:8.5px}
+}
+@media (max-width:420px){
+  .ng-fintech-app .brand-name{font-size:9.5px}
+  .ng-fintech-app .ws-txt,.ng-fintech-app .jwt-pill{display:none}
+  .ng-fintech-app .pane{padding:8px}
+}
+</style>
+
+<h2 style="position:absolute;width:1px;height:1px;overflow:hidden">Simulador Angular RxJS Fintech — Elizabeth Sáenz, Tajamar</h2>
+
+<div class="topbar">
+  <div class="brand">
+    <svg class="brand-logo" viewBox="0 0 32 32" fill="none">
+      <rect width="32" height="32" rx="6" fill="#0C1220"/>
+      <rect x="1" y="1" width="30" height="30" rx="5" stroke="#00D4FF" stroke-width="1"/>
+      <path d="M16 6 L26 10 L26 22 L16 26 L6 22 L6 10 Z" stroke="#00D4FF" stroke-width="1.2" fill="none"/>
+      <path d="M16 6 L16 26M6 10 L26 22M26 10 L6 22" stroke="#00D4FF" stroke-width=".6" opacity=".4"/>
+      <circle cx="16" cy="16" r="3" fill="#00D4FF"/>
+    </svg>
+    <div>
+      <div class="brand-name">ANGULAR FINTECH SIMULATOR</div>
+      <div class="brand-sub">Elizabeth Sáenz · Master Fullstack &amp; Cloud · Tajamar</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="ws-pill">
+      <div class="ws-dot"></div>
+      <span class="ws-txt">WS LIVE</span>
+    </div>
+    <div class="jwt-pill" id="ngf-jwt">JWT · VALID</div>
+  </div>
+</div>
+
+<div class="nav">
+  <div class="tab on" data-tab="0">
+    <svg width="11" height="11" viewBox="0 0 12 12" fill="none" style="margin-right:4px"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M6 3v3l2 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+    RXJS OPERATORS
+  </div>
+  <div class="tab" data-tab="1">
+    <svg width="11" height="11" viewBox="0 0 12 12" fill="none" style="margin-right:4px"><rect x="1" y="1" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.2"/><path d="M1 4h10M4 4v7" stroke="currentColor" stroke-width="1.2"/></svg>
+    DASHBOARD
+  </div>
+  <div class="tab" data-tab="2">
+    <svg width="11" height="11" viewBox="0 0 12 12" fill="none" style="margin-right:4px"><rect x="2" y="1" width="8" height="10" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M4 4h4M4 6h4M4 8h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+    JWT INTERCEPTOR
+  </div>
+  <div class="tab" data-tab="3">
+    <svg width="11" height="11" viewBox="0 0 12 12" fill="none" style="margin-right:4px"><path d="M6 1v2M6 9v2M1 6h2M9 6h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><circle cx="6" cy="6" r="2.5" stroke="currentColor" stroke-width="1.2"/></svg>
+    CHANGE DETECTION
+  </div>
+</div>
+
+<div class="pane on" id="ngf-p0">
+  <div class="sec-label">Selecciona un operador para ver su marble diagram y código real</div>
+  <div class="op-grid">
+    <div class="op sel-b" id="ngf-op-switch">
+      <svg class="op-icon" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="rgba(0,212,255,.1)"/><path d="M7 10h5l-3 4h5" stroke="#00D4FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M14 18h7" stroke="#00D4FF" stroke-width="1.5" stroke-linecap="round"/><circle cx="21" cy="18" r="2" stroke="#00D4FF" stroke-width="1.2"/></svg>
+      <div class="op-name bl">switchMap</div>
+      <div class="op-case">Cancela petición anterior. Búsquedas typeahead y filtros.</div>
+      <span class="badge badge-b">ÚLTIMO VALOR</span>
+    </div>
+    <div class="op" id="ngf-op-merge">
+      <svg class="op-icon" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="rgba(176,96,255,.1)"/><path d="M6 8h4M6 14h4M6 20h4" stroke="#B060FF" stroke-width="1.5" stroke-linecap="round"/><path d="M10 8 L18 14 M10 14 L18 14 M10 20 L18 14" stroke="#B060FF" stroke-width="1.2" stroke-linecap="round"/><path d="M18 14h4" stroke="#B060FF" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="14" r="2" stroke="#B060FF" stroke-width="1.2"/></svg>
+      <div class="op-name" style="color:#B060FF">mergeMap</div>
+      <div class="op-case">Ejecuta todo en paralelo. Recursos independientes.</div>
+      <span class="badge badge-p">PARALELO</span>
+    </div>
+    <div class="op" id="ngf-op-concat">
+      <svg class="op-icon" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="rgba(255,107,0,.1)"/><rect x="5" y="7" width="5" height="4" rx="1" stroke="#FF6B00" stroke-width="1.2"/><rect x="5" y="13" width="5" height="4" rx="1" stroke="#FF6B00" stroke-width="1.2"/><path d="M13 15h3l3-5" stroke="#FF6B00" stroke-width="1.5" stroke-linecap="round"/><circle cx="22" cy="8" r="2" stroke="#FF6B00" stroke-width="1.2"/><path d="M13 15l3 5" stroke="#FF6B00" stroke-width="1.5" stroke-linecap="round" opacity=".4"/></svg>
+      <div class="op-name" style="color:#FF6B00">concatMap</div>
+      <div class="op-case">Cola ordenada. Transacciones donde el orden importa.</div>
+      <span class="badge badge-o">ORDENADO</span>
+    </div>
+    <div class="op" id="ngf-op-exhaust">
+      <svg class="op-icon" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="6" fill="rgba(255,45,85,.1)"/><rect x="10" y="6" width="8" height="11" rx="2" stroke="#FF2D55" stroke-width="1.5"/><rect x="11" y="19" width="6" height="3" rx="1" stroke="#FF2D55" stroke-width="1.2"/><line x1="14" y1="17" x2="14" y2="19" stroke="#FF2D55" stroke-width="1.2"/></svg>
+      <div class="op-name" style="color:#FF2D55">exhaustMap</div>
+      <div class="op-case">Ignora nuevas emisiones. Botón Pagar anti-duplicados.</div>
+      <span class="badge badge-r">ANTI-DUP</span>
+    </div>
+  </div>
+  <div class="marble-area">
+    <div style="font-size:9px;color:#6B7FA3;letter-spacing:1px;margin-bottom:8px">MARBLE DIAGRAM — <span id="ngf-op-title" style="color:#00D4FF;font-weight:700">switchMap</span></div>
+    <div id="ngf-marble-zone"></div>
+  </div>
+  <div class="code-block" id="ngf-op-code"></div>
+  <div class="btn-row">
+    <button class="btn-run" id="ngf-run-marble">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" style="margin-right:4px;vertical-align:-1px"><polygon points="2,1 9,5 2,9"/></svg>
+      SIMULAR
+    </button>
+    <span style="font-size:9px;color:#6B7FA3" id="ngf-op-hint"></span>
+  </div>
+</div>
+
+<div class="pane" id="ngf-p1">
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-l">SALDO TOTAL</div><div class="kpi-v bl" id="ngf-k-saldo">€47,382</div><div class="kpi-d up">+€124 hoy</div></div>
+    <div class="kpi"><div class="kpi-l">IBEX 35</div><div class="kpi-v up" id="ngf-k-ibex">10,842</div><div class="kpi-d up" id="ngf-k-id">+0.34%</div></div>
+    <div class="kpi"><div class="kpi-l">EUR/USD</div><div class="kpi-v or" id="ngf-k-eur">1.0821</div><div class="kpi-d dn" id="ngf-k-ed">-0.12%</div></div>
+    <div class="kpi"><div class="kpi-l">ALERTAS</div><div class="kpi-v dn">3</div><div class="kpi-d or">Requieren revisión</div></div>
+  </div>
+  <div class="dash-grid">
+    <div class="panel">
+      <div class="p-title">COTIZACIONES
+        <div class="live-badge"><div class="ws-dot" style="width:6px;height:6px"></div>WEBSOCKET</div>
+      </div>
+      <div id="ngf-tickers"></div>
+    </div>
+    <div class="panel">
+      <div class="p-title">BÚSQUEDA DE CUENTAS <span style="color:#6B7FA3;font-size:8px;font-weight:400">switchMap</span></div>
+      <div class="srch">
+        <svg class="srch-ico" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.5" stroke="#6B7FA3" stroke-width="1.2"/><path d="M9.5 9.5L13 13" stroke="#6B7FA3" stroke-width="1.4" stroke-linecap="round"/></svg>
+        <input type="text" placeholder="Buscar IBAN o titular..." id="ngf-s-inp">
+      </div>
+      <div class="srch-st" id="ngf-s-st"></div>
+      <div id="ngf-s-res"></div>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="p-title">ÚLTIMAS TRANSACCIONES <span style="color:#6B7FA3;font-size:8px;font-weight:400">concatMap — orden garantizado</span></div>
+    <div id="ngf-txlist"></div>
+  </div>
+</div>
+
+<div class="pane" id="ngf-p2">
+  <div class="sec-label">Simula el ciclo completo JWT — normal o con token expirado</div>
+  <div class="flow-row">
+    <div class="f-step f-act" id="ngf-fs0"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="margin-bottom:2px"><path d="M2 7h10M8 4l4 3-4 3" stroke="#00D4FF" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><div>HTTP</div><div class="f-lbl">Request</div></div>
+    <div class="f-arr">›</div>
+    <div class="f-step" id="ngf-fs1"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="margin-bottom:2px"><rect x="2" y="3" width="10" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 6.5h4M5 8.5h2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg><div>Interceptor</div><div class="f-lbl">Adjunta token</div></div>
+    <div class="f-arr">›</div>
+    <div class="f-step" id="ngf-fs2"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="margin-bottom:2px"><path d="M2 11V5l5-3 5 3v6l-5 2-5-2Z" stroke="currentColor" stroke-width="1.2"/><path d="M7 5v4M5.5 7.5l1.5 1 1.5-1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg><div>API</div><div class="f-lbl">200 / 401</div></div>
+    <div class="f-arr">›</div>
+    <div class="f-step" id="ngf-fs3"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="margin-bottom:2px"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M7 4.5v3M7 9h.01" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg><div>catchError</div><div class="f-lbl">Detecta 401</div></div>
+    <div class="f-arr">›</div>
+    <div class="f-step" id="ngf-fs4"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="margin-bottom:2px"><path d="M2 7h10M8 4l4 3-4 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="3" cy="7" r="1.5" stroke="currentColor" stroke-width="1"/></svg><div>refresh()</div><div class="f-lbl">Nuevo token</div></div>
+    <div class="f-arr">›</div>
+    <div class="f-step" id="ngf-fs5"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="margin-bottom:2px"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1.2"/><path d="M4.5 7l2 2 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg><div>Retry</div><div class="f-lbl">Transparente</div></div>
+  </div>
+  <div class="btn-row" style="margin-top:0">
+    <button class="btn-green" id="ngf-sim-normal">
+      <svg width="10" height="10" viewBox="0 0 10 10" fill="currentColor" style="margin-right:4px;vertical-align:-1px"><polygon points="2,1 9,5 2,9"/></svg>
+      PETICIÓN NORMAL
+    </button>
+    <button class="btn-red" id="ngf-sim-expired">
+      <svg width="10" height="10" viewBox="0 0 12 12" fill="none" style="margin-right:4px;vertical-align:-1px"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.4"/><path d="M6 3v3M6 8.5h.01" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      TOKEN EXPIRADO
+    </button>
+  </div>
+  <div style="font-size:9px;color:#6B7FA3;letter-spacing:1px;margin:8px 0 4px">LOG DEL INTERCEPTOR</div>
+  <div class="log" id="ngf-jlog"></div>
+</div>
+
+<div class="pane" id="ngf-p3">
+  <div class="sec-label">Compara cuántos componentes se verifican en cada estrategia</div>
+  <div class="cd-toggle">
+    <div class="cd-btn cd-def acd" id="ngf-cdb-def">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right:4px"><circle cx="6" cy="6" r="5" stroke="#FF2D55" stroke-width="1.2"/><path d="M4 4l4 4M8 4l-4 4" stroke="#FF2D55" stroke-width="1.4" stroke-linecap="round"/></svg>
+      DEFAULT CD
+    </div>
+    <div class="cd-btn cd-onp" id="ngf-cdb-onp">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" style="margin-right:4px"><circle cx="6" cy="6" r="5" stroke="#00FF88" stroke-width="1.2"/><path d="M3.5 6l2 2 3-3" stroke="#00FF88" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      ONPUSH CD
+    </div>
+  </div>
+  <div class="tree-wrap"><div id="ngf-cdtree"></div></div>
+  <div class="chk-cnt">
+    <div class="chk-n" id="ngf-chk-n">0</div>
+    <div class="chk-l">COMPONENTES VERIFICADOS</div>
+  </div>
+  <div class="btn-row" style="margin-top:0;margin-bottom:8px">
+    <button class="btn-run" id="ngf-trigger-cd">
+      <svg width="10" height="10" viewBox="0 0 12 12" fill="none" style="margin-right:4px;vertical-align:-1px"><path d="M6 1v2M6 9v2M1 6h2M9 6h2M2.6 2.6l1.4 1.4M8 8l1.4 1.4M2.6 9.4l1.4-1.4M8 4l1.4-1.4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      DISPARAR EVENTO
+    </button>
+    <span style="font-size:9px;color:#6B7FA3" id="ngf-cd-hint">Default: revisa TODOS los nodos</span>
+  </div>
+  <div class="code-block" id="ngf-cd-code"></div>
+</div>
+
+</div>
+
+<script>
+(function(){
+var root = document.currentScript.previousElementSibling;
+function $(sel){ return root.querySelector(sel); }
+function $all(sel){ return root.querySelectorAll(sel); }
+
+$all('.tab').forEach(function(tab){
+  tab.addEventListener('click', function(){
+    var i = +tab.getAttribute('data-tab');
+    $all('.tab').forEach(function(t,j){ t.classList.toggle('on', i===j); });
+    $all('.pane').forEach(function(p,j){ p.classList.toggle('on', i===j); });
+  });
+});
+
+var SVG_CANCEL='<svg viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" stroke-width="1.4"/><path d="M4 4l5 5M9 4l-5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>';
+var SVG_CHECK='<svg viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.5" stroke="currentColor" stroke-width="1.4"/><path d="M3.5 6.5l2.5 2.5 3.5-4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+var OPS={
+  switch:{title:'switchMap',color:'#00D4FF',hint:'Simula búsqueda de IBAN — peticiones anteriores canceladas automáticamente',
+    code:"searchControl.valueChanges.pipe(\n  debounceTime(300),\n  distinctUntilChanged(),\n  filter(q => q.length >= 3),\n  switchMap(query =>\n    cuentaService.buscar(query).pipe(\n      catchError(() => of([]))\n    )\n  ),\n  takeUntilDestroyed()\n).subscribe(res => this.resultados = res);",
+    rows:[
+      {lbl:'source$', nodes:[{p:8,v:'a',c:'nb'},{p:28,v:'ab',c:'nb'},{p:50,v:'abc',c:'nb'}]},
+      {lbl:'inner (a)',nodes:[{p:22,v:SVG_CANCEL,c:'nm'}]},
+      {lbl:'inner (ab)',nodes:[{p:42,v:SVG_CANCEL,c:'nm'}]},
+      {lbl:'result$', nodes:[{p:72,v:SVG_CHECK,c:'ng'}]}
+    ]
+  },
+  merge:{title:'mergeMap',color:'#B060FF',hint:'Simula carga paralela: cuenta + tarjetas + perfil al mismo tiempo',
+    code:"const dashData$ = merge(\n  cuentaService.getCuenta().pipe(map(d=>({type:'cuenta',d}))),\n  tarjetaService.getTarjetas().pipe(map(d=>({type:'tarjetas',d}))),\n  perfilService.getPerfil().pipe(map(d=>({type:'perfil',d})))\n);\n\ndashData$.subscribe(result => {\n  this.state[result.type] = result.d;\n});",
+    rows:[
+      {lbl:'src$', nodes:[{p:5,v:'A',c:'nb'},{p:20,v:'B',c:'nb'},{p:35,v:'C',c:'nb'}]},
+      {lbl:'inner A', nodes:[{p:38,v:SVG_CHECK,c:'ng'}]},
+      {lbl:'inner B', nodes:[{p:50,v:SVG_CHECK,c:'ng'}]},
+      {lbl:'inner C', nodes:[{p:62,v:SVG_CHECK,c:'ng'}]}
+    ]
+  },
+  concat:{title:'concatMap',color:'#FF6B00',hint:'Simula transacción bancaria — el débito siempre va antes que el crédito',
+    code:"transacciones$.pipe(\n  concatMap(tx =>\n    pagoService.ejecutar(tx).pipe(\n      tap(res => this.log(res)),\n      catchError(err => {\n        this.rollback(tx);\n        return EMPTY;\n      })\n    )\n  )\n).subscribe();",
+    rows:[
+      {lbl:'source$', nodes:[{p:5,v:'T1',c:'nb'},{p:10,v:'T2',c:'nb'}]},
+      {lbl:'queue',   nodes:[{p:10,v:'T2',c:'nm'}]},
+      {lbl:'result$', nodes:[{p:40,v:'T1✓',c:'ng'},{p:75,v:'T2✓',c:'ng'}]}
+    ]
+  },
+  exhaust:{title:'exhaustMap',color:'#FF2D55',hint:'Simula botón Pagar — 3 clics rápidos, solo se procesa 1 petición',
+    code:"pagarBtn$.pipe(\n  exhaustMap(() =>\n    pagoService.ejecutar(this.payload).pipe(\n      tap(() => this.showSuccess()),\n      catchError(err => {\n        this.showError(err);\n        return EMPTY;\n      })\n    )\n  )\n).subscribe();\n\n// 10 clics → 1 sola petición procesada ✓",
+    rows:[
+      {lbl:'clicks$',  nodes:[{p:5,v:'c1',c:'nb'},{p:18,v:'c2',c:'nr'},{p:30,v:'c3',c:'nr'}]},
+      {lbl:'ignored',  nodes:[{p:18,v:SVG_CANCEL,c:'nr'},{p:30,v:SVG_CANCEL,c:'nr'}]},
+      {lbl:'result$',  nodes:[{p:65,v:SVG_CHECK,c:'ng'}]}
+    ]
+  }
+};
+
+var curOp='switch';
+function pickOp(op){
+  curOp=op;
+  ['switch','merge','concat','exhaust'].forEach(function(o){
+    var el=$('#ngf-op-'+o);
+    var cls='op'+(op===o?' sel-'+(o==='switch'?'b':o==='merge'?'p':o==='concat'?'o':'r'):'');
+    el.className=cls;
+  });
+  var d=OPS[op];
+  $('#ngf-op-title').textContent=d.title;
+  $('#ngf-op-title').style.color=d.color;
+  $('#ngf-op-code').textContent=d.code;
+  $('#ngf-op-hint').textContent=d.hint;
+  renderMarbles(d.rows,false);
+}
+function renderMarbles(rows,anim){
+  var z=$('#ngf-marble-zone');
+  z.innerHTML=rows.map(function(row){
+    return '<div class="m-row"><span class="m-lbl">'+row.lbl+'</span><div class="m-line">'+
+      row.nodes.map(function(n){
+        return '<div class="m-node '+n.c+'" style="left:'+n.p+'%;'+(anim?'opacity:0;transform:scale(0)':'')+'">'+n.v+'</div>';
+      }).join('')+
+      '</div><span class="m-arrow">›</span></div>';
+  }).join('');
+  if(anim){
+    setTimeout(function(){
+      var nodes = z.querySelectorAll('.m-node');
+      nodes.forEach(function(m,i){
+        setTimeout(function(){ m.style.opacity='1'; m.style.transform='scale(1)'; }, i*280);
+      });
+    },50);
+  }
+}
+$('#ngf-run-marble').addEventListener('click', function(){ renderMarbles(OPS[curOp].rows,true); });
+['switch','merge','concat','exhaust'].forEach(function(o){
+  $('#ngf-op-'+o).addEventListener('click', function(){ pickOp(o); });
+});
+pickOp('switch');
+
+var TICKERS=[
+  {name:'IBEX 35',base:10800,fmt:function(v){return v.toFixed(0);}},
+  {name:'EUR/USD',base:1.082,fmt:function(v){return v.toFixed(4);}},
+  {name:'BBVA',base:8.42,fmt:function(v){return v.toFixed(2);}},
+  {name:'SAN',base:4.18,fmt:function(v){return v.toFixed(2);}},
+  {name:'BTC/EUR',base:61200,fmt:function(v){return v.toFixed(0);}}
+];
+var TD=TICKERS.map(function(t){ return Object.assign({},t,{val:t.base,prev:t.base}); });
+function renderTK(){
+  $('#ngf-tickers').innerHTML=TD.map(function(t){
+    var d=t.val-t.prev, p=((d/t.prev)*100).toFixed(2), up=d>=0;
+    return '<div class="t-row"><span class="t-name">'+t.name+'</span><span class="t-price '+(up?'up':'dn')+'">'+t.fmt(t.val)+'</span><span class="t-chg '+(up?'up':'dn')+'">'+(up?'+':'')+p+'%</span></div>';
+  }).join('');
+}
+function updateTK(){
+  TD=TD.map(function(t){
+    var c=(Math.random()-.48)*t.base*.003;
+    return Object.assign({},t,{prev:t.val,val:t.val+c});
+  });
+  renderTK();
+  $('#ngf-k-ibex').textContent=TD[0].val.toFixed(0);
+  $('#ngf-k-eur').textContent=TD[1].val.toFixed(4);
+}
+renderTK();
+var ngfInterval=setInterval(updateTK,2000);
+
+var ACCS=[
+  {iban:'ES76 2100 0418 40XX XXXX 7891',name:'Juan García López',bal:'€12,450.00'},
+  {iban:'ES91 0049 0001 51XX XXXX 5678',name:'María Rodríguez',bal:'€8,320.50'},
+  {iban:'ES80 2038 9900 96XX XXXX 3456',name:'Carlos Martínez Ruiz',bal:'€33,100.25'},
+  {iban:'ES43 0030 2053 09XX XXXX 5670',name:'Ana Sánchez Ruiz',bal:'€5,670.00'},
+  {iban:'ES02 1465 0100 92XX XXXX 0001',name:'Pedro Alonso García',bal:'€21,800.00'}
+];
+var _st=null;
+$('#ngf-s-inp').addEventListener('input', function(){
+  var v=this.value;
+  var st=$('#ngf-s-st'), sr=$('#ngf-s-res');
+  if(_st) clearTimeout(_st);
+  if(v.length<2){ st.textContent=''; sr.innerHTML=''; return; }
+  st.innerHTML='<span style="color:#FF6B00">debounceTime(300ms)...</span>';
+  sr.innerHTML='';
+  _st=setTimeout(function(){
+    st.innerHTML='<span style="color:#B060FF">switchMap → buscando...</span>';
+    setTimeout(function(){
+      var res=ACCS.filter(function(a){
+        return a.iban.toLowerCase().indexOf(v.toLowerCase())>-1 || a.name.toLowerCase().indexOf(v.toLowerCase())>-1;
+      });
+      st.innerHTML='<span style="color:#00FF88">'+res.length+' resultado(s) — peticiones anteriores canceladas</span>';
+      sr.innerHTML=res.length?res.map(function(a){
+        return '<div class="acc"><div><div class="acc-ib">'+a.iban+'</div><div style="color:#E8F0FF;font-size:9px">'+a.name+'</div></div><div class="acc-bal">'+a.bal+'</div></div>';
+      }).join(''):'<div style="color:#6B7FA3;font-size:9px;padding:6px">Sin resultados</div>';
+    },380);
+  },300);
+});
+
+var TX_SVG={
+  transfer:'<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5h9M7 3l4 3.5-4 3" stroke="#00FF88" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  card:'<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="1.5" y="3" width="10" height="7" rx="1.5" stroke="#FF2D55" stroke-width="1.2"/><path d="M1.5 5.5h10" stroke="#FF2D55" stroke-width="1.2"/></svg>',
+  bill:'<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><rect x="2" y="1.5" width="9" height="10" rx="1.2" stroke="#FF6B00" stroke-width="1.2"/><path d="M4 5h5M4 7h5M4 9h3" stroke="#FF6B00" stroke-width="1.2" stroke-linecap="round"/></svg>',
+  salary:'<svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="#00FF88" stroke-width="1.2"/><path d="M4.5 6.5l1.5 1.5 2.5-3" stroke="#00FF88" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+};
+var TXS=[
+  {ico:'transfer',bg:'rgba(0,255,136,.12)',desc:'Transferencia recibida — BBVA',date:'Hoy 11:42',amt:'+€1,200.00',c:'up'},
+  {ico:'card',bg:'rgba(255,45,85,.12)',desc:'Compra Amazon.es',date:'Hoy 09:15',amt:'-€89.99',c:'dn'},
+  {ico:'bill',bg:'rgba(255,107,0,.12)',desc:'Endesa · Recibo domiciliado',date:'Ayer',amt:'-€142.50',c:'dn'},
+  {ico:'salary',bg:'rgba(0,255,136,.12)',desc:'Nómina ESC Media & Tech',date:'01/06/2026',amt:'+€3,200.00',c:'up'},
+  {ico:'card',bg:'rgba(255,45,85,.12)',desc:'Alquiler · Transferencia',date:'01/06/2026',amt:'-€850.00',c:'dn'}
+];
+$('#ngf-txlist').innerHTML=TXS.map(function(t){
+  return '<div class="tx-row"><div class="tx-left"><div class="tx-ico" style="background:'+t.bg+'">'+TX_SVG[t.ico]+'</div><div><div class="tx-desc">'+t.desc+'</div><div class="tx-date">'+t.date+'</div></div></div><div class="tx-amt '+t.c+'">'+t.amt+'</div></div>';
+}).join('');
+
+var _busy=false;
+function dly(ms){ return new Promise(function(r){ setTimeout(r,ms); }); }
+function addLog(cls,msg){
+  var log=$('#ngf-jlog'), t=new Date().toLocaleTimeString('es',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  var d=document.createElement('div'); d.className='ll';
+  d.innerHTML='<span class="lt">['+t+']</span><span class="'+cls+'">'+msg+'</span>';
+  log.appendChild(d); log.scrollTop=log.scrollHeight;
+}
+function resetF(){ for(var i=0;i<6;i++) $('#ngf-fs'+i).className='f-step'; }
+function setF(id,cls){ $('#ngf-fs'+id).className='f-step '+cls; }
+
+$('#ngf-sim-normal').addEventListener('click', function(){
+  if(_busy) return; _busy=true; resetF();
+  addLog('li','→ GET /api/cuentas/saldo');
+  dly(350).then(function(){ setF(0,'f-act');
+    addLog('li','Interceptor: adjuntando Bearer token válido');
+    return dly(400); }).then(function(){ setF(1,'f-act');
+    return dly(500); }).then(function(){ setF(2,'f-ok');
+    addLog('ls','200 OK — datos recibidos');
+    return dly(200); }).then(function(){ setF(3,'f-act');
+    return dly(150); }).then(function(){ setF(4,'f-act');
+    return dly(150); }).then(function(){ setF(5,'f-ok');
+    addLog('ls','Respuesta entregada al componente');
+    $('#ngf-jwt').textContent='JWT · VALID';
+    $('#ngf-jwt').style.color='';
+    _busy=false; });
+});
+
+$('#ngf-sim-expired').addEventListener('click', function(){
+  if(_busy) return; _busy=true; resetF();
+  addLog('li','→ POST /api/transferencias');
+  dly(350).then(function(){ setF(0,'f-act');
+    addLog('lw','Token adjuntado (exp: 14:00 — EXPIRADO)');
+    return dly(400); }).then(function(){ setF(1,'f-act');
+    return dly(500); }).then(function(){ setF(2,'f-err');
+    addLog('le','401 Unauthorized — token expirado');
+    $('#ngf-jwt').textContent='JWT · EXPIRED';
+    $('#ngf-jwt').style.color='#FF2D55';
+    return dly(350); }).then(function(){ setF(3,'f-act');
+    addLog('lw','catchError(401) → iniciando refreshToken()...');
+    return dly(600); }).then(function(){ setF(4,'f-act');
+    addLog('li','Nuevo JWT obtenido — reintentando petición original');
+    return dly(550); }).then(function(){ setF(5,'f-ok');
+    addLog('ls','200 OK — transferencia procesada. Usuario no notó nada.');
+    $('#ngf-jwt').textContent='JWT · REFRESHED';
+    $('#ngf-jwt').style.color='#00FF88';
+    setTimeout(function(){ $('#ngf-jwt').textContent='JWT · VALID'; $('#ngf-jwt').style.color=''; },2500);
+    _busy=false; });
+});
+addLog('ls','Sistema iniciado. Simula una petición para ver el log del interceptor.');
+
+var _cdMode='def';
+var TREE_NODES=[
+  {id:'app',lbl:'AppComponent',p:null},
+  {id:'nav',lbl:'NavComponent',p:'app'},
+  {id:'dash',lbl:'DashComponent',p:'app'},
+  {id:'saldo',lbl:'SaldoComponent',p:'dash',evt:true},
+  {id:'tx',lbl:'TxListComponent',p:'dash'},
+  {id:'chart',lbl:'ChartComponent',p:'dash'},
+  {id:'btn',lbl:'PagarBtnComponent',p:'tx'}
+];
+function buildNode(id,checked){
+  var n; for(var i=0;i<TREE_NODES.length;i++){ if(TREE_NODES[i].id===id){ n=TREE_NODES[i]; break; } }
+  var cls = checked.indexOf(id)>-1 ? (n.evt?'trg':'chk') : 'ski';
+  var kids = TREE_NODES.filter(function(x){ return x.p===id; });
+  var evtBadge = n.evt ? '<div style="font-size:7px;margin-top:2px;color:#00FF88">EVENT SOURCE</div>' : '';
+  var html = '<div class="nd"><div class="nb2 '+cls+'">'+n.lbl+evtBadge+'</div>';
+  if(kids.length){
+    html += '<div class="nd-con"></div><div class="nd-row">';
+    html += kids.map(function(k){ return '<div>'+buildNode(k.id,checked)+'</div>'; }).join('<div style="width:6px"></div>');
+    html += '</div>';
+  }
+  html += '</div>';
+  return html;
+}
+function renderTree(ch){ $('#ngf-cdtree').innerHTML = buildNode('app',ch); }
+function setCd(m){
+  _cdMode=m;
+  $('#ngf-cdb-def').classList.toggle('acd', m==='def');
+  $('#ngf-cdb-onp').classList.toggle('acd', m==='onp');
+  $('#ngf-cd-hint').textContent = m==='def' ? 'Default: revisa TODOS los componentes en cada evento' : 'OnPush: solo verifica el componente origen del evento';
+  $('#ngf-cd-code').textContent = m==='def'
+    ? "@Component({\n  selector: 'app-saldo'\n  // Sin ChangeDetectionStrategy\n  // Angular revisa todo el árbol\n  // en cada evento del navegador\n})\nexport class SaldoComponent {}"
+    : "@Component({\n  changeDetection: ChangeDetectionStrategy.OnPush,\n  selector: 'app-saldo',\n  template: '{{ saldo$ | async | currency:\"EUR\" }}'\n})\nexport class SaldoComponent {\n  saldo$ = this.svc.getSaldo().pipe(shareReplay(1));\n  // async pipe: sub + unsub automáticos\n  // shareReplay: 1 llamada HTTP para todos\n}";
+  renderTree([]);
+  $('#ngf-chk-n').textContent='0';
+  $('#ngf-chk-n').className='chk-n';
+}
+$('#ngf-cdb-def').addEventListener('click', function(){ setCd('def'); });
+$('#ngf-cdb-onp').addEventListener('click', function(){ setCd('onp'); });
+$('#ngf-trigger-cd').addEventListener('click', function(){
+  var all=['app','nav','dash','saldo','tx','chart','btn'];
+  if(_cdMode==='def'){
+    var i=0, cnt=0;
+    $('#ngf-chk-n').className='chk-n dn';
+    function step(){
+      if(i>=all.length) return;
+      renderTree(all.slice(0,i+1));
+      cnt++; $('#ngf-chk-n').textContent=cnt;
+      i++; setTimeout(step,180);
+    }
+    step();
+  } else {
+    renderTree([]);
+    setTimeout(function(){
+      renderTree(['saldo']);
+      $('#ngf-chk-n').textContent='1';
+      $('#ngf-chk-n').className='chk-n up';
+    },200);
+  }
+});
+setCd('def'); renderTree([]);
+})();
+</script>
